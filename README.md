@@ -1,6 +1,6 @@
-[![version][GitHub version](https://badge.fury.io/gh/Naereen%2FStrapDown.js.svg)](https://github.com/Naereen/StrapDown.js)
-
 [![version][version-badge]][CHANGELOG] [![license][license-badge]][LICENSE]
+
+[![version][GitHub version]](https://badge.fury.io/gh/Naereen%2FStrapDown.js.svg)](https://github.com/Naereen/StrapDown.js)
 
 [FEDIM Core - A Fantastic Engine Designed In Magic](http://fedimcore.tumblr.com/) 
 
