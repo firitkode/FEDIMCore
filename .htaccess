@@ -1,0 +1,5 @@
+RewriteEngine on
+RewriteRule ^([A-Za-z0-9-]+)/?$ index.php?page=$1 [NC]
+RewriteRule ^([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/?$ index.php?page=$1&subpage=$2 [NC]
+RewriteRule ^([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/?$ index.php?page=$1&subpage=$2&minipage=$3 [NC]
+RewriteRule ^([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/([A-Za-z0-9-]+)/?$ index.php?page=$1&subpage=$2&minipage=$3&tinypage=$4 [NC]
