@@ -1,4 +1,4 @@
-[![version][version-badge]][CHANGELOG] [![license][license-badge]][LICENSE]
+[![version][GitHub release]][CHANGELOG] [![license][license-badge]][LICENSE]
 
 [FEDIM Core - A Fantastic Engine Designed In Magic](http://fedimcore.tumblr.com/) 
 
