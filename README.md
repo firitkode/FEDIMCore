@@ -1,4 +1,4 @@
-[![version][GitHub release]][CHANGELOG] [![license][license-badge]][LICENSE]
+[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/) [![version][version-badge]][CHANGELOG] [![license][license-badge]] [LICENSE]
 
 [FEDIM Core - A Fantastic Engine Designed In Magic](http://fedimcore.tumblr.com/) 
 
