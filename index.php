@@ -1,9 +1,29 @@
 <?php
+// Require the settings file
 require("core/base/settings.inc.php");
 
+// Require the functions file - necessary to use connect file
+require("core/base/functions.inc.php");
+
+// Check/Set the environment to determine which set of database settings to use, server settings properly set up, etc
+CheckSetEnvironment();
+
+// Require the connect file in order to use database functionality
+include("core/base/connect.inc.php");
+
+// Get page levels
 $PAGE = (isset($_GET['page'])) ? $_GET['page'] : "";
 $SUBPAGE = (isset($_GET['subpage'])) ? $_GET['subpage'] : "";
 $MINIPAGE = (isset($_GET['minipage'])) ? $_GET['minipage'] : "";
+$TINYPAGE = (isset($_GET['tinypage'])) ? $_GET['tinypage'] : "";
+
+// Build a PageString to be used for PageLoading
+$PageString = "";
+BuildPageStringFile();
+
+// Run ErrorDetectionSystem
+$ErrorMessage = "";
+ErrorDetectionSystem();
 ?>
 
 <!doctype html>
@@ -14,7 +34,27 @@ $MINIPAGE = (isset($_GET['minipage'])) ? $_GET['minipage'] : "";
         <link rel="apple-touch-icon" sizes="76x76" href="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/img/apple-icon.png">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-        <title>FEDIM Core v1.0</title>
+        <title>FEDIM Core v1.0<?php
+        if ($PAGE != "")
+        {
+          echo " - " . $PAGE;
+        }
+
+        if ($SUBPAGE != "")
+        {
+          echo " - " . $SUBPAGE;
+        }
+
+        if ($MINIPAGE != "")
+        {
+          echo " - " . $MINIPAGE;
+        }
+
+        if ($TINYPAGE != "")
+        {
+          echo " - " . $TINYPAGE;
+        }
+        ?></title>
 
         <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
         <meta name="viewport" content="width=device-width" />
@@ -30,133 +70,59 @@ $MINIPAGE = (isset($_GET['minipage'])) ? $_GET['minipage'] : "";
         <link href='http://fonts.googleapis.com/css?family=Montserrat:400,300,700' rel='stylesheet' type='text/css'>
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
         <link href="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/css/nucleo-icons.css" rel="stylesheet" />
+
+        <!-- Error Page assets -->
+        <!-- Google font -->
+      	<link href="https://fonts.googleapis.com/css?family=Muli:400" rel="stylesheet">
+      	<link href="https://fonts.googleapis.com/css?family=Passion+One" rel="stylesheet">
+
+      	<!-- Font Awesome Icon -->
+      	<link type="text/css" rel="stylesheet" href="<?php echo ABSPATH;?>themes/<?php echo THEME_NAME;?>/includes/errorpage/css/font-awesome.min.css" />
+
+      	<!-- Custom stlylesheet -->
+      	<link type="text/css" rel="stylesheet" href="<?php echo ABSPATH;?>themes/<?php echo THEME_NAME;?>/includes/errorpage/css/style.css" />
+
+      	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+      	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+      	<!--[if lt IE 9]>
+      		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+      		<![endif]-->
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-md fixed-top navbar-transparent" color-on-scroll="500">
-            <div class="container">
-                <div class="navbar-translate">
-                    <button class="navbar-toggler navbar-toggler-right navbar-burger" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-bar"></span>
-                        <span class="navbar-toggler-bar"></span>
-                        <span class="navbar-toggler-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="<?php echo ABSPATH;?>">FEDIM Core</a>
-                </div>
+        <?php
+        // Error Detection System
+        if($Error == 0)
+        {
+            // No errors - do page load
+            // Determine if a page is trying to be loaded
+            if ($PAGE != "")
+            {
+                /* -- BEGIN PAGE LOADING -- */
+                $PageName = $PageString;
 
-                <div class="collapse navbar-collapse" id="navbarToggler">
-                    <ul class="navbar-nav ml-auto">
-                        <!--<li class="nav-item">
-                            <a class="nav-link" rel="tooltip" title="Follow us on Twitter" data-placement="bottom" href="https://twitter.com/firitkode" target="_blank">
-                                <i class="fa fa-twitter"></i>
-                                    <p class="d-lg-none">Twitter</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" rel="tooltip" title="Like us on Facebook" data-placement="bottom" href="https://www.facebook.com/firitkode" target="_blank">
-                                <i class="fa fa-facebook-square"></i>
-                                  <p class="d-lg-none">Facebook</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" rel="tooltip" title="Follow us on Instagram" data-placement="bottom" href="https://www.instagram.com/firitkode" target="_blank">
-                                <i class="fa fa-instagram"></i>
-                                    <p class="d-lg-none">Instagram</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link" rel="tooltip" title="Star on GitHub" data-placement="bottom" href="https://www.github.com/firitkode/FEDIM" target="_blank">
-                                <i class="fa fa-github"></i>
-                                    <p class="d-lg-none">GitHub</p>
-                            </a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a href="documentation/tutorial-components.html" target="_blank" class="nav-link"><i class="nc-icon nc-book-bookmark"></i> Documentation</a>
-                        </li>-->
-
-                        <li class="nav-item">
-                            <a href="<?php echo ABSPATH;?>about" target="_blank" class="nav-link"><i class="nc-icon nc-touch-id"></i> About</a>
-                        </li>
-                    </ul>
-
-                    <a href="https://" target="_blank" class="btn btn-danger btn-round">Download Today!</a>
-                </div>
-            </div>
-        </nav>
-
-        <div class="wrapper">
-            <?php
-            include("Themes/".THEME_NAME."/pageheader.php");
-            ?>
-
-            <div class="main">
-                <div class="section section-buttons">
-                    <div class="container">
-                        <?php
-                        /* -- BEGIN PAGE LOADING -- */
-                        // Determine page to load
-                        if ($PAGE != "")
-                        {
-                            if ($SUBPAGE != "")
-                            {
-                                if ($MINIPAGE != "")
-                                {
-                                    ?>
-                                    <h1>A page/subpage/minipage has been loaded</h1>
-                                    <?php
-                                }
-                                else
-                                {
-                                    ?>
-                                    <h1>A page/subpage has been loaded</h1>
-                                    <?php
-                                }
-                            }
-                            else
-                            {
-                                ?>
-                                <h1>A page has been loaded</h1>
-                                <?php
-                            }
-                        }
-                        else
-                        {
-                            ?>
-                            <h1>Front Page loaded</h1>
-                            <?php
-                        }
-
-                        // Load it
-                        /* -- END PAGE LOADING -- */
-                        ?>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <footer class="footer">
-            <div class="container">
-                <div class="row">
-                    <nav class="footer-nav">
-                        <ul>
-                            <li><a href="http://firitkode.tumblr.com">FiritKode</a></li>
-                            <li><a href="http://firitkode.tumblr.com">Blog</a></li>
-                            <li><a href="http://firitkode.tumblr.com/license">Licenses</a></li>
-                        </ul>
-                    </nav>
-
-                    <div class="credits ml-auto">
-                        <span class="copyright">
-                            © <script>document.write(new Date().getFullYear())</script>, made with <i class="fa fa-heart heart"></i> by FiritKode
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </footer>
+                PageLoad($PageName,$PageType);
+                /* -- END PAGE LOADING -- */
+            }
+            else
+            {
+                if (FRONTPAGE_TYPE == "DB")
+                {
+                    PageLoad(FRONTPAGE_DB,"DB");
+                }
+                else if (FRONTPAGE_TYPE == "FILE")
+                {
+                    PageLoad(FRONTPAGE_FILE,"FILE");
+                }
+            }
+        }
+        else
+        {
+            // ERROR Found
+            include("themes/".THEME_NAME."/pagelates/error-base.php");
+        }
+        ?>
     </body>
 
     <!-- Core JS Files -->
@@ -176,6 +142,9 @@ $MINIPAGE = (isset($_GET['minipage'])) ? $_GET['minipage'] : "";
     <script src="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/js/bootstrap-datetimepicker.min.js"></script>
 
     <?php
-    include(ABSPATH."core/base/extras.js.inc.php");
+    if(!ErrorDetectionSystem())
+    {
+      include("core/base/extras.js.inc.php");
+    }
     ?>
 </html>
