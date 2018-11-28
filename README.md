@@ -17,6 +17,11 @@ FEDIM Core contains some pages already designed and implemented. Here is the lis
 - [Register Page](http://fedimcore.tumblr.com/examples/register.html)
 - [Profile Page](http://fedimcore.tumblr.com/examples/profile.html)
 
+- [Database Test Page](http://localhost/projects/FEDIMCore/dbtestfolder1/parentdatabasepage)
+- [Parent Database Test Page](http://localhost/projects/FEDIMCore/databasepage)
+- [File Test Page](http://localhost/projects/FEDIMCore/testpage)
+- [Parent File Test Page](http://localhost/projects/FEDIMCore/testfolder1/testpage2)
+
 Tutorial & Components
 
 Once you download the archive, you will be able find a tutorial page inside it explaining how to start using it. You can also check the [documentation online](http://fedimcore.tumblr.com/documentation/tutorial-components.html).
