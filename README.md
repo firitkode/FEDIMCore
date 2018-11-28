@@ -19,8 +19,8 @@ FEDIM Core contains some pages already designed and implemented. Here is the lis
 
 - [Database Test Page](http://localhost/projects/FEDIMCore/databasepage)
 - [Parent Database Test Page](http://localhost/projects/FEDIMCore/dbtestfolder1/parentdatabasepage)
-- [File Test Page](http://localhost/projects/FEDIMCore/testpage)
-- [Parent File Test Page](http://localhost/projects/FEDIMCore/testfolder1/testpage2)
+- [File Test Page](http://localhost/projects/FEDIMCore/filetestpage)
+- [Parent File Test Page](http://localhost/projects/FEDIMCore/testfolder1/filetestpage)
 
 Tutorial & Components
 
