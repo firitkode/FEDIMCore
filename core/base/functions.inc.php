@@ -58,18 +58,16 @@ function CheckPageInDB($tocheck)
     // Count how many levels there are
     $tocheckListNodes = count($tocheckList) - 1;
 
-    if ($tocheckListNodes > 1)
+    if ($tocheckListNodes > 0)
     {
         // A parent has been detected
         $Parent = "";
 
         // Parent is first nodes; Child is last node
-        $ChildNode = $tocheckList[$tocheckListNodes-1];
+        $ChildNode = $tocheckList[$tocheckListNodes-1]; //testpage
 
         // Get the key of the ChildNode
-        $ChildNodeKey = array_search($ChildNode, $tocheckList); // say will return 3 in a 4 node array
-
-        //echo "key : ".$ChildNodeKey;
+        $ChildNodeKey = array_search($ChildNode, $tocheckList); // 0
 
         // Get the ParentNodes
         for ($i = 0; $i < $tocheckListNodes-1; $i++)
@@ -77,21 +75,44 @@ function CheckPageInDB($tocheck)
             $Parent .= $tocheckList[$i]."/";
         }
 
-        // query_db call
-        $Query = query_db("SELECT",DB_PREFIX."pages","name,parent,"," = name, = parent,","id","id",NULL,NULL,NULL,NULL);
+        if ($Parent != "")
+        {
+          // query_db call
+          $Query = query_db("SELECT",DB_PREFIX."pages","PageName,parent,"," = '{$ChildNode}', = '{$Parent}',","id","id",NULL,NULL,NULL,NULL);
+        }
+        else
+        {
+          // query_db call
+          $Query = query_db("SELECT",DB_PREFIX."pages","PageName,"," = '{$ChildNode}',","id","id",NULL,NULL,NULL,NULL);
+        }
 
         if ($Query != "")
         {
             // Explode list
-            $List = explode($Query, ",");
+            $List = explode(",", $Query);
 
             // Select first one
             $Value = $List[0];
 
             if ($Value != null || $Value != "" || $Value != 0)
             {
-                // found
-                return true;
+                // found; now check to see if the page is active
+                if ($Parent != "")
+                {
+                    $PageStatus = GetPageInfo($ChildNode,"status",$Parent);
+                }
+                else
+                {
+                    $PageStatus = GetPageInfo($ChildNode,"status");
+                }
+                if ($PageStatus == "active")
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
@@ -108,7 +129,7 @@ function CheckPageInDB($tocheck)
     {
         // Not a parent page situation; single page
         // query_db call
-        $Query = query_db("SELECT",DB_PREFIX."pages","name,"," = '{$tocheck}',","id","id",NULL,NULL,NULL,NULL);
+        $Query = query_db("SELECT",DB_PREFIX."pages","PageName,"," = '{$tocheck}',","id","id",NULL,NULL,NULL,NULL);
 
         if ($Query != "")
         {
@@ -139,6 +160,8 @@ function CheckPageInDB($tocheck)
 function CheckSetEnvironment()
 {
   global $ErrorMessage;
+  global $MSet;
+  global $PAGE;
 
   // Database details set
   if (IsLocalhost()) {
@@ -175,6 +198,12 @@ function CheckSetEnvironment()
   {
       $ErrorMessage = "allow_url_include is not enabled!";
   }
+
+  if (file_exists(".maintenance") && $PAGE != "login")
+  {
+      $ErrorMessage = "Hmm. It appears our site is undergoing maintenance. Please check back later!";
+      $MSet = 1;
+  }
   // -------------------------------------------------------------------------------------------------------------------------
 }
 
@@ -186,121 +215,220 @@ function ErrorDetectionSystem()
   global $PageString;
   global $PageType;
   global $PAGE;
+  global $MSet;
+  global $FRONTPAGE_TYPE;
 
   // Set a base case
   $Error = 0;
 
-  // -- Get/Check ini settings
-  //
-  if (!INISettingsStatus){$Error = 1;$ErrorType="INI";}
+  // Page error detections
   // --------------------------------------------------------------------------------------------------------
 
-  // Oops! Page Not Found
-  // --------------------------------------------------------------------------------------------------------
-
-  if ($PAGE != "")
+  if ($MSet != 1)
   {
-      // -- Page Check DB Errors - IF a DB page, check to see if:
-      // 1. It exists in DB
-      // 2. It is active
-      //
-      if (!CheckPageInDB($PageString))
+      if ($PAGE != "" && INISettingsStatus)
       {
-        $Error = 1;
-        $ErrorType = "404";
-      }
-      else
-      {
-          $PageType = "DB";
-      }
-      // --------------------------------------------------------------------------------------------------------
-
-      // -- Page Check File Errors - IF page is a FILE page, check to see if:
-      // 1. It exists in pages/ directory
-      //
-      if ($PageString != "")
-      {
-          if (!file_exists("pages/".$PageString))
+          // -- Page Check DB Errors - IF a DB page, check to see if:
+          // 1. It exists in DB
+          // 2. It is active
+          //
+          if (!CheckPageInDB($PageString))
           {
               $Error = 1;
               $ErrorType = "404";
-              $ErrorMessage = "Oops! Page not found";
+              $ErrorMessage = "Oops! Page Not Found";
+
+              // -- Page Check File Errors - IF page is a FILE page, check to see if:
+              // 1. It exists in pages/ directory
+              //
+              if ($PageString != "")
+              {
+                  if (!file_exists("pages/".$PageString))
+                  {
+                      $Error = 1;
+                      $ErrorType = "404";
+                      $ErrorMessage = "Oops! Page not found";
+                  }
+                  else
+                  {
+                      // Page exists; set the type as 'FILE'
+                      $PageType = "FILE";
+                      $Error = 0;
+                  }
+              }
+              // -------------------------------------------------------------------------------------------------------
+
+              // -- Page from FILE contents length check
+              if ($PageString != "")
+              {
+                  $FILE = "pages/".$PageString.".php";
+                  if (file_exists($FILE))
+                  {
+                      $PageFile = fopen($FILE,"r");
+                      if (filesize($FILE) == 0)
+                      {
+                          //$CONTENTS = fread($PageFile,filesize($FILE));
+                          $Error = 1;
+                          $ErrorType = 104;
+                          $ErrorMessage = "This page has no contents!";
+                          fclose($PageFile);
+                      }
+                  }
+              }
           }
           else
           {
-              // Page exists; set the type as 'FILE'
-              $PageType = "FILE";
+              $PageType = "DB";
+          }
+          // --------------------------------------------------------------------------------------------------------
+      }
+      else
+      {
+          // Check frontpage exist and not blank
+          if ($FRONTPAGE_TYPE == "FILE")
+          {
+              $FILE = "pages/".FRONTPAGE_FILE;
+              if (file_exists($FILE))
+              {
+                  $PageFile = fopen($FILE,"r");
+                  if (filesize($FILE) == 0)
+                  {
+                      //$CONTENTS = fread($PageFile,filesize($FILE));
+                      $Error = 1;
+                      $ErrorType = 104;
+                      $ErrorMessage = "Front Page has no content!";
+                      fclose($PageFile);
+                  }
+              }
+              else
+              {
+                  // -- Patch 2.0.3: Fix for missing FrontPage file when "FILE" is specified.
+                  // Check to see if there is a DB front page named "frontpage"
+                  if (!CheckPageInDB("frontpage"))
+                  {
+                      // No DB file named frontpage
+                      // Now we can do the error
+                      $Error = 1;
+                      $ErrorType = 404;
+                      $ErrorMessage = "Front Page does not exist!<br />Admin ERRNO: 1001";
+                  }
+                  else
+                  {
+                      $PageString = "frontpage";
+                      $FRONTPAGE_TYPE = "DB";
+                  }
+                  // --------------------------------------------------------------------
+              }
+          }
+          else if ($FRONTPAGE_TYPE == "DB")
+          {
+              if (CheckPageInDB(FRONTPAGE_DB))
+              {
+                  // Get the content
+                  $PageContent = GetPageContent(FRONTPAGE_DB);
+
+                  if ($PageContent == "")
+                  {
+
+                    $Error = 1;
+                    $ErrorType = 104;
+                    $ErrorMessage = "Front Page has no content!";
+                  }
+              }
+              else
+              {
+                $Error = 1;
+                $ErrorType = 404;
+                $ErrorMessage = "Front Page does not exist!";
+              }
           }
       }
-      // -------------------------------------------------------------------------------------------------------
+  }
+  // -------------------------------------------------------------------------------------------------------
 
-      // -- Page from FILE contents length check
-      if ($PageString != "")
+  // Page configuration detection
+  if ($PAGE != "")
+  {
+      // -- Page Name Tag
+      $FILE = "pages/".$PageString;
+      $FILEINI = str_replace(".php", "", $FILE).".ini";
+
+      if (file_exists($FILE))
       {
-          $FILE = "pages/".$PageString.".php";
-          if (file_exists($FILE))
+          //$PageFileContents = file_get_contents($FILE);
+          /*if ((!(strpos($PageFileContents, 'PAGE NAME:') !== false)) || (!(strpos($PageFileContents, 'PAGE DESC:') !== false)))
           {
-              $PageFile = fopen($FILE,"r");
-              if (filesize($FILE) == 0)
+              $Error = 1;
+              $ErrorType = "114";
+              $ErrorMessage = "Oops! The PageFile is corrupt!";
+          }*/
+
+          // Check to see if there is an INI for the page
+          if (file_exists($FILEINI) || $PAGE == "login")
+          {
+              // INI found; or it's the login page
+              // Check to see if the page is enabled
+              if (PullFileInfo($PageString,"Is_Enabled") == 0)
               {
-                  //$CONTENTS = fread($PageFile,filesize($FILE));
+                  // Not enabled; error
                   $Error = 1;
-                  $ErrorType = 104;
-                  $ErrorMessage = "This page has no contents!";
-                  fclose($PageFile);
+                  $ErrorType = "INI";
+                  $ErrorMessage = "Oops! The page requested is not enabled.";
               }
+          }
+          else
+          {
+              // INI not found
+              $Error = 1;
+              $ErrorType = "INI";
+              $ErrorMessage = "Oops! The page requested does not have a configuration.";
           }
       }
   }
   else
   {
-      // Check frontpage exist and not blank
-      if (FRONTPAGE_TYPE == "FILE")
-      {
-          $FILE = "pages/".FRONTPAGE_FILE;
-          if (file_exists($FILE))
-          {
-              $PageFile = fopen($FILE,"r");
-              if (filesize($FILE) == 0)
-              {
-                  //$CONTENTS = fread($PageFile,filesize($FILE));
-                  $Error = 1;
-                  $ErrorType = 104;
-                  $ErrorMessage = "Front Page has no content!";
-                  fclose($PageFile);
-              }
-          }
-          else
-          {
-            $Error = 1;
-            $ErrorType = 404;
-            $ErrorMessage = "Front Page does not exist!";
-          }
-      }
-      else if (FRONTPAGE_TYPE == "DB")
-      {
-          if (CheckPageInDB(FRONTPAGE_DB))
-          {
-              // Get the content
-              $PageContent = GetPageContent(FRONTPAGE_DB);
+      $FILE = "pages/".FRONTPAGE_FILE;
+      $FILEINI = str_replace(".php", "", $FILE).".ini";
 
-              if ($PageContent == "")
-              {
-
-                $Error = 1;
-                $ErrorType = 104;
-                $ErrorMessage = "Front Page has no content!";
-              }
-          }
-          else
+      if (file_exists($FILEINI))
+      {
+          //$PageFileContents = file_get_contents($FILE);
+          /*if ((!(strpos($PageFileContents, 'PAGE NAME:') !== false)) || (!(strpos($PageFileContents, 'PAGE DESC:') !== false)))
           {
-            $Error = 1;
-            $ErrorType = 404;
-            $ErrorMessage = "Front Page does not exist!";
+              $Error = 1;
+              $ErrorType = "114";
+              $ErrorMessage = "Oops! The PageFile is corrupt!";
+          }*/
+          // INI found; or it's the login page
+          // Check to see if the page is enabled
+          if (PullFileInfo(FRONTPAGE_FILE,"Is_Enabled") == 0)
+          {
+              // Not enabled; error
+              $Error = 1;
+              $ErrorType = "INI";
+              $ErrorMessage = "Oops! The frontpage requested is not enabled.";
           }
-      }
+        }
+        else
+        {
+          // INI not found
+          $Error = 1;
+          $ErrorType = "INI";
+          $ErrorMessage = "Oops! The frontpage requested does not have a configuration.";
+        }
   }
   // -------------------------------------------------------------------------------------------------------
+
+  // -- MSet detections
+  //
+  if ($MSet == 1){$Error = 1;$ErrorType="MSET";}
+  // --------------------------------------------------------------------------------------------------------
+
+  // -- Get/Check ini settings
+
+  //
+  if (!INISettingsStatus){$Error = 1;$ErrorType="INI";}
+  // --------------------------------------------------------------------------------------------------------
 
   // Don't need to return something
   // Do endcode
@@ -314,10 +442,17 @@ function ErrorDetectionSystem()
   }*/
 }
 
-function GetPageContent($name)
+function GetPageContent($parent,$child = null)
 {
     // query_db call
-    $Query = query_db("SELECT",DB_PREFIX."pages","name,"," = '{$name}',","content","name",NULL,NULL,NULL,NULL);
+    if ($child != null)
+    {
+        $Query = query_db("SELECT",DB_PREFIX."pages","PageName,parent,"," = '{$child}', = '{$parent}',","content","PageName",NULL,NULL,NULL,NULL);
+    }
+    else
+    {
+        $Query = query_db("SELECT",DB_PREFIX."pages","PageName,"," = '{$parent}',","content","PageName",NULL,NULL,NULL,NULL);
+    }
 
     if ($Query != "")
     {
@@ -332,10 +467,17 @@ function GetPageContent($name)
     }
 }
 
-function GetPageInfo($name,$item)
+function GetPageInfo($name,$item,$Parent = null)
 {
     // query_db call
-    $Query = query_db("SELECT",DB_PREFIX."pages","name,"," = '{$name}',","{$item}","{$item}",NULL,NULL,NULL,NULL);
+    if ($Parent != null)
+    {
+        $Query = query_db("SELECT",DB_PREFIX."pages","PageName,parent,"," = '{$name}', = '{$Parent}',","{$item}","{$item}",NULL,NULL,NULL,NULL);
+    }
+    else
+    {
+        $Query = query_db("SELECT",DB_PREFIX."pages","PageName,"," = '{$name}',","{$item}","{$item}",NULL,NULL,NULL,NULL);
+    }
 
     if ($Query != "")
     {
@@ -354,6 +496,15 @@ function GetPageInfo($name,$item)
     }
 }
 
+function GetStringBetween($string, $start, $end){
+    $string = ' ' . $string;
+    $ini = strpos($string, $start);
+    if ($ini == 0) return '';
+    $ini += strlen($start);
+    $len = strpos($string, $end, $ini) - $ini;
+    return substr($string, $ini, $len);
+}
+
 function IsLocalhost()
 {
   $whitelist = array( '127.0.0.1', '::1', 'localhost' );
@@ -361,43 +512,116 @@ function IsLocalhost()
     return true;
 }
 
-function PageLoad($name,$type)
+function PageLoad($parent,$child,$type)
 {
     global $PAGE;
-    // Load the nav
-    include("themes/".THEME_NAME."/nav.php");
+    global $PageString;
 
-    // Load the header
-    include("themes/".THEME_NAME."/pageheader.php");
+    $file = ($parent != "") ? $parent . $child . ".php" : $child . ".php";
+
 
     // Load the page structure
     switch ($type)
     {
         case 'DB':
             // Get the content
-            $PageContent = GetPageContent($name);
+            $PageContent = GetPageContent($parent,$child);
 
             // Evaluate the content
-            echo eval("?>".$PageContent."<?");
+            /*echo eval("?>".$PageContent."<?");*/
+            ParsePageLoad($PageContent,$PAGE);
         break;
 
         case 'FILE':
-            $FILE = "pages/".$name;
+            $FILE = "pages/".$file;
 
             if (filesize($FILE) != 0)
             {
                 $PageFile = fopen($FILE,"r");
                 $CONTENTS = fread($PageFile,filesize($FILE));
+                /*echo eval("?>".$CONTENTS."<?");*/
 
-                echo eval("?>".$CONTENTS."<?");
-
+                ParsePageLoad($CONTENTS,$file);
                 fclose($PageFile);
             }
 
         break;
     }
-    // Load the footer
-    include("themes/".THEME_NAME."/pagefooter.php");
+}
+
+function ParsePageLoad($content,$pagename)
+{
+    echo $content;
+}
+
+function PullFileInfo($String,$What)
+{
+    // Create file variable
+    $FILE = "pages/".$String;
+
+    // Remove .php and add .ini
+    $FILE = str_replace(".php", ".ini", $FILE);
+
+    //$PageFileContents = file_get_contents($FILE);
+
+    // Load the ini file
+    $FileArray = parse_ini_file($FILE);
+
+    // Find the name
+    //print_r($ini_array); # prints the entire parsed .ini file
+
+    //print($ini_array['mystring']); #prints "fooooo"
+
+    // Set item
+    $Item = $FileArray[$What];
+
+    // Display
+    return $Item;
+    // Locate PAGE NAME: to determine the start of where the title is
+
+    //Output a line of the file until the end is reached
+
+    // Locate PAGE DESC: to determine the start of where the description is
+
+}
+
+function SetParentChildFromString($string)
+{
+    global $ChildNode;
+    global $Parent;
+
+    //echo $string;
+    // There is a .php at the end of tocheck; we need to remove it
+    $tocheck = str_replace(".php", "", $string);
+
+    // Add a last /
+    $tocheckSlash = $tocheck;
+    $tocheckSlash .= "/";
+
+    // Are we checking for a page with a parent? IOW: Is the PageString like "page/subpage/minipage/tinypage"?
+    // First take the PageString and break it apart
+    $tocheckList = explode("/", $tocheckSlash);
+
+    // Count how many levels there are
+    $tocheckListNodes = count($tocheckList) - 1;
+
+    if ($tocheckListNodes > 0)
+    {
+        // A parent has been detected
+        $Parent = "";
+
+        // Parent is first nodes; Child is last node
+        $ChildNode = $tocheckList[$tocheckListNodes-1]; //testpage
+
+        // Get the key of the ChildNode
+        $ChildNodeKey = array_search($ChildNode, $tocheckList); // 0
+
+        // Get the ParentNodes
+        for ($i = 0; $i < $tocheckListNodes-1; $i++)
+        {
+            $Parent .= $tocheckList[$i]."/";
+        }
+    }
 }
 
 function query_db($TYPE,$DB_TABLE,$DB_WHERECLAUSE,$DB_WHERECLAUSEEQUALTO,$TO_BE_FETCHED,$DB_ORDERBY,$DB_GROUPBY = NULL,$INSERT_ITEMS = NULL,$INSERT_VALUES = NULL,$DB_ORDERBY_ORDER = NULL)

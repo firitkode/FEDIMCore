@@ -44,7 +44,7 @@
                 </li>-->
 
                 <li class="nav-item">
-                    <a href="<?php echo ABSPATH;?>about" target="_blank" class="nav-link"><i class="nc-icon nc-touch-id"></i> About</a>
+                    <a href="<?php echo ABSPATH;?>about" target="_self" class="nav-link"><i class="nc-icon nc-touch-id"></i> About</a>
                 </li>
             </ul>
 

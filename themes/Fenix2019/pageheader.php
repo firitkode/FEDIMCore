@@ -6,8 +6,32 @@ if ($PAGE != "")
         <div class="filter"></div>
             <div class="container">
                 <div class="motto text-center">
-                    <h1><?php echo GetPageInfo($PAGE,"title");?></h1>
-                    <h3><?php echo GetPageInfo($PAGE,"subtitle");?></h3>
+                    <h1>
+                      <?php
+                      if (CheckPageInDB($PageString))
+                      {
+                          echo GetPageInfo($ChildNode,"title",$Parent);
+                      }
+                      else
+                      {
+                          // Pull title from the .php of the PageString
+                          echo PullFileInfo($PageString,"PageName");
+                      }
+                      ?>
+                    </h1>
+                    <h3>
+                      <?php
+                      if (CheckPageInDB($PageString))
+                      {
+                          echo GetPageInfo($ChildNode,"PageDesc",$Parent);
+                      }
+                      else
+                      {
+                          // Pull title from the .php of the PageString
+                          echo PullFileInfo($PageString,"PageDesc");
+                      }
+                      ?>
+                    </h3>
                     <br />
                     <!--<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="btn btn-outline-neutral btn-round"><i class="fa fa-play"></i>Watch video</a>
                     <button type="button" class="btn btn-outline-neutral btn-round">Download</button>-->
@@ -16,6 +40,10 @@ if ($PAGE != "")
         </div>
     </div>
     <?php
+}
+else if ($PAGE == "login")
+{
+    // login page
 }
 else
 {

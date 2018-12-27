@@ -5,25 +5,29 @@ require("core/base/settings.inc.php");
 // Require the functions file - necessary to use connect file
 require("core/base/functions.inc.php");
 
-// Check/Set the environment to determine which set of database settings to use, server settings properly set up, etc
-CheckSetEnvironment();
-
-// Require the connect file in order to use database functionality
-include("core/base/connect.inc.php");
-
 // Get page levels
 $PAGE = (isset($_GET['page'])) ? $_GET['page'] : "";
 $SUBPAGE = (isset($_GET['subpage'])) ? $_GET['subpage'] : "";
 $MINIPAGE = (isset($_GET['minipage'])) ? $_GET['minipage'] : "";
 $TINYPAGE = (isset($_GET['tinypage'])) ? $_GET['tinypage'] : "";
 
+// Check/Set the environment to determine which set of database settings to use, server settings properly set up, etc
+$MSet = 0;
+$ErrorMessage = "";
+CheckSetEnvironment();
+
+// Require the connect file in order to use database functionality
+include("core/base/connect.inc.php");
+
 // Build a PageString to be used for PageLoading
 $PageString = "";
 BuildPageStringFile();
 
 // Run ErrorDetectionSystem
-$ErrorMessage = "";
 ErrorDetectionSystem();
+
+// Set up the Parent and child for globals
+SetParentChildFromString($PageString);
 ?>
 
 <!doctype html>
@@ -34,25 +38,19 @@ ErrorDetectionSystem();
         <link rel="apple-touch-icon" sizes="76x76" href="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/img/apple-icon.png">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-        <title>FEDIM Core v1.0<?php
+        <title><?php echo FRAMEWORK_NAME;?> <?php echo VERSION;?><?php
         if ($PAGE != "")
         {
-          echo " - " . $PAGE;
-        }
-
-        if ($SUBPAGE != "")
-        {
-          echo " - " . $SUBPAGE;
-        }
-
-        if ($MINIPAGE != "")
-        {
-          echo " - " . $MINIPAGE;
-        }
-
-        if ($TINYPAGE != "")
-        {
-          echo " - " . $TINYPAGE;
+            if (isset($ChildNode))
+            {
+                // child page
+                echo " - " . GetPageInfo($ChildNode,"title",$Parent);
+            }
+            else
+            {
+                // single page
+                echo " - " . GetPageInfo($PageString,"title");
+            }
         }
         ?></title>
 
@@ -95,27 +93,7 @@ ErrorDetectionSystem();
         // Error Detection System
         if($Error == 0)
         {
-            // No errors - do page load
-            // Determine if a page is trying to be loaded
-            if ($PAGE != "")
-            {
-                /* -- BEGIN PAGE LOADING -- */
-                $PageName = $PageString;
-
-                PageLoad($PageName,$PageType);
-                /* -- END PAGE LOADING -- */
-            }
-            else
-            {
-                if (FRONTPAGE_TYPE == "DB")
-                {
-                    PageLoad(FRONTPAGE_DB,"DB");
-                }
-                else if (FRONTPAGE_TYPE == "FILE")
-                {
-                    PageLoad(FRONTPAGE_FILE,"FILE");
-                }
-            }
+            include("themes/".THEME_NAME."/pagelates/page-base.php");
         }
         else
         {

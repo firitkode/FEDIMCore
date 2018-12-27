@@ -62,12 +62,12 @@ body {
   line-height: 1.4;
 }
 
-.notfound .notfound-404 {
+.notfound .notfound-404, .notfound .notfound-INI, .notfound .notfound-MSET {
   position: relative;
   height: 200px;
 }
 
-.notfound .notfound-404 h1 {
+.notfound .notfound-404 h1, .notfound .notfound-INI h1, .notfound .notfound-MSET h1 {
   font-family: 'Passion One', cursive;
   position: absolute;
   left: 50%;
@@ -76,20 +76,6 @@ body {
       -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
   font-size: 100px;
-  margin: 0px;
-  color: #222225;
-  text-transform: uppercase;
-}
-
-.notfound .notfound-INI h1 {
-  font-family: 'Passion One', cursive;
-  position: absolute;
-  left: 50%;
-  top: 0%;
-  -webkit-transform: translate(-50%, -50%);
-      -ms-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-  font-size: 50px;
   margin: 0px;
   color: #222225;
   text-transform: uppercase;
