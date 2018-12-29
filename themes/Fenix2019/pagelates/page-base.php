@@ -13,7 +13,10 @@ include("themes/".THEME_NAME."/pageheader.php");
     if ($PAGE != "")
     {
         /* -- BEGIN PAGE LOADING -- */
-        $PageName = $PageString;
+        if ($Parent == "")
+        {
+            $Parent = $PageString;
+        }
 
         PageLoad($Parent,$ChildNode,$PageType);
         /* -- END PAGE LOADING -- */

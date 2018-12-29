@@ -1,7 +1,7 @@
 <?php
 // Base
 define("FRAMEWORK_NAME", "FEDIMCore");
-define("VERSION", "2.0.3");
+define("VERSION", "2.0.4");
 define("ABSPATH", "http://localhost/projects/FEDIMCore/");                      // The absolute path of your website
 define("FrameworkLocation", "core/paperkit2/");                                 // The framework location that FEDIMCore is built on; usually a folder placed under the /core/
                                                                                 // folder; contains the framework assets

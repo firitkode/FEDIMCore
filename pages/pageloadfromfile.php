@@ -30,7 +30,7 @@
         <h2 class="title">A Dark Section</h2>
         <div class="row">
             <div class="col-md-12">
-                <p>I am a test page loaded from file!</p>
+                <p>I am a test page loaded from file. Good stuff!</p>
             </div>
         </div>
     </div>

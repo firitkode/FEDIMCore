@@ -41,15 +41,24 @@ SetParentChildFromString($PageString);
         <title><?php echo FRAMEWORK_NAME;?> <?php echo VERSION;?><?php
         if ($PAGE != "")
         {
-            if (isset($ChildNode))
+            // check to see if it's a DB page for FILE page
+            if (CheckPageInDB($PageString))
             {
-                // child page
-                echo " - " . GetPageInfo($ChildNode,"title",$Parent);
+                if (isset($ChildNode))
+                {
+                    // child page
+                    echo " - " . GetPageInfo($ChildNode,"title",$Parent);
+                }
+                else
+                {
+                    // single page
+                    echo " - " . GetPageInfo($PageString,"title");
+                }
             }
             else
             {
-                // single page
-                echo " - " . GetPageInfo($PageString,"title");
+              // Pull from .ini file
+                echo " - " . PullFileInfo($PageString,"PageName");
             }
         }
         ?></title>
@@ -68,6 +77,7 @@ SetParentChildFromString($PageString);
         <link href='http://fonts.googleapis.com/css?family=Montserrat:400,300,700' rel='stylesheet' type='text/css'>
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
         <link href="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/css/nucleo-icons.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
         <!-- Error Page assets -->
         <!-- Google font -->

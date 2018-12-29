@@ -363,25 +363,29 @@ function ErrorDetectionSystem()
               $ErrorMessage = "Oops! The PageFile is corrupt!";
           }*/
 
-          // Check to see if there is an INI for the page
-          if (file_exists($FILEINI) || $PAGE == "login")
+          // Version 2.0.4 fix - Disabled page even though requesting from DB
+          if ($FRONTPAGE_TYPE == "FILE")
           {
-              // INI found; or it's the login page
-              // Check to see if the page is enabled
-              if (PullFileInfo($PageString,"Is_Enabled") == 0)
+              // Check to see if there is an INI for the page
+              if (file_exists($FILEINI))
               {
-                  // Not enabled; error
+                  // INI found; or it's the login page
+                  // Check to see if the page is enabled
+                  if (PullFileInfo($PageString,"Is_Enabled") == 0)
+                  {
+                      // Not enabled; error
+                      $Error = 1;
+                      $ErrorType = "INI";
+                      $ErrorMessage = "Oops! The page requested is not enabled.";
+                  }
+              }
+              else
+              {
+                  // INI not found
                   $Error = 1;
                   $ErrorType = "INI";
-                  $ErrorMessage = "Oops! The page requested is not enabled.";
+                  $ErrorMessage = "Oops! The page requested does not have a configuration.";
               }
-          }
-          else
-          {
-              // INI not found
-              $Error = 1;
-              $ErrorType = "INI";
-              $ErrorMessage = "Oops! The page requested does not have a configuration.";
           }
       }
   }
@@ -390,32 +394,37 @@ function ErrorDetectionSystem()
       $FILE = "pages/".FRONTPAGE_FILE;
       $FILEINI = str_replace(".php", "", $FILE).".ini";
 
-      if (file_exists($FILEINI))
+      // Version 2.0.4 Fix - Disabled page even when specified accessing from DB
+      if ($FRONTPAGE_TYPE == "FILE")
       {
-          //$PageFileContents = file_get_contents($FILE);
-          /*if ((!(strpos($PageFileContents, 'PAGE NAME:') !== false)) || (!(strpos($PageFileContents, 'PAGE DESC:') !== false)))
+          if (file_exists($FILEINI))
           {
-              $Error = 1;
-              $ErrorType = "114";
-              $ErrorMessage = "Oops! The PageFile is corrupt!";
-          }*/
-          // INI found; or it's the login page
-          // Check to see if the page is enabled
-          if (PullFileInfo(FRONTPAGE_FILE,"Is_Enabled") == 0)
-          {
-              // Not enabled; error
+              //$PageFileContents = file_get_contents($FILE);
+              /*if ((!(strpos($PageFileContents, 'PAGE NAME:') !== false)) || (!(strpos($PageFileContents, 'PAGE DESC:') !== false)))
+              {
+                  $Error = 1;
+                  $ErrorType = "114";
+                  $ErrorMessage = "Oops! The PageFile is corrupt!";
+              }*/
+              // INI found; or it's the login page
+              // Check to see if the page is enabled
+              $FILEWITHOUTPAGES = str_replace("pages/", "", $FILE);
+              if (PullFileInfo($FILEWITHOUTPAGES,"Is_Enabled") == 0)
+              {
+                  // Not enabled; error
+                  $Error = 1;
+                  $ErrorType = "INI";
+                  $ErrorMessage = "Oops! The frontpage requested is not enabled.";
+              }
+            }
+            else
+            {
+              // INI not found
               $Error = 1;
               $ErrorType = "INI";
-              $ErrorMessage = "Oops! The frontpage requested is not enabled.";
-          }
-        }
-        else
-        {
-          // INI not found
-          $Error = 1;
-          $ErrorType = "INI";
-          $ErrorMessage = "Oops! The frontpage requested does not have a configuration.";
-        }
+              $ErrorMessage = "Oops! The frontpage requested does not have a configuration.";
+            }
+      }
   }
   // -------------------------------------------------------------------------------------------------------
 
@@ -440,6 +449,96 @@ function ErrorDetectionSystem()
   {
       return false;
   }*/
+}
+
+function GetNavigationItemDetails($ItemID,$WHAT)
+{
+    // query_db call
+    $Query = query_db("SELECT",DB_PREFIX."menus","id,itemtype,"," = '{$ItemID}', != 'inside-multi',","{$WHAT}","id",NULL,NULL,NULL,NULL);
+
+    if ($Query != "")
+    {
+        // Explode list
+        $List = explode(",", $Query);
+
+        // Select first one
+        $Value = $List[0];
+
+        // found
+        return $Value;
+    }
+}
+
+function GetNavigationItemMultiItemDetails($ItemID,$WHAT)
+{
+    // query_db call
+    $Query = query_db("SELECT",DB_PREFIX."menus","id,"," = '{$ItemID}',","{$WHAT}","id",NULL,NULL,NULL,NULL);
+
+    if ($Query != "")
+    {
+        // Explode list
+        $List = explode(",", $Query);
+
+        // Select first one
+        $Value = $List[0];
+
+        // found
+        return $Value;
+    }
+}
+
+function GetMenuItemInfo($ItemID,$WHAT)
+{
+    // query_db call
+    $Query = query_db("SELECT",DB_PREFIX."menus","id,"," = '{$ItemID}',","{$WHAT}","id",NULL,NULL,NULL,NULL);
+
+    if ($Query != "")
+    {
+        // Explode list
+        $List = explode(",", $Query);
+
+        // Select first one
+        $Value = $List[0];
+
+        // found
+        return $Value;
+    }
+}
+
+function GetNavigationItems($menuID)
+{
+    // query_db call
+    $Query = query_db("SELECT",DB_PREFIX."menus","menuID,status,"," = '{$menuID}', = 'active',","id","itemorder",NULL,NULL,NULL,NULL);
+
+    if ($Query != "")
+    {
+        // Explode list
+        $List = explode(",", $Query);
+
+        // Select first one
+        $Value = $List;
+
+        // found
+        return $Value;
+    }
+}
+
+function GetNavigationItemMultiItems($MultiID)
+{
+    // query_db call
+    $Query = query_db("SELECT",DB_PREFIX."menus","multiID,status,"," = '{$MultiID}', = 'active',","id","itemorder",NULL,NULL,NULL,NULL);
+
+    if ($Query != "")
+    {
+        // Explode list
+        $List = explode(",", $Query);
+
+        // Select first one
+        $Value = $List;
+
+        // found
+        return $Value;
+    }
 }
 
 function GetPageContent($parent,$child = null)
@@ -496,6 +595,24 @@ function GetPageInfo($name,$item,$Parent = null)
     }
 }
 
+function GetSettings($NAME)
+{
+    // query_db call
+    $Query = query_db("SELECT",DB_PREFIX."settings","name,"," = '{$NAME}',","value","name",NULL,NULL,NULL,NULL);
+
+    if ($Query != "")
+    {
+        // Explode list
+        $List = explode(",", $Query);
+
+        // Select first one
+        $Value = $List[0];
+
+        // found
+        return $Value;
+    }
+}
+
 function GetStringBetween($string, $start, $end){
     $string = ' ' . $string;
     $ini = strpos($string, $start);
@@ -517,15 +634,27 @@ function PageLoad($parent,$child,$type)
     global $PAGE;
     global $PageString;
 
-    $file = ($parent != "") ? $parent . $child . ".php" : $child . ".php";
-
+    $file = (!empty(strpos($parent, "/", 0))) ? $parent . $child . ".php" : $parent;
 
     // Load the page structure
     switch ($type)
     {
         case 'DB':
-            // Get the content
-            $PageContent = GetPageContent($parent,$child);
+            // Parent has .php in it; strip it
+            $parent = str_replace(".php", "", $parent);
+
+            if (!empty(strpos($parent, "/", 0)))
+            {
+                // parent found; do parent and child params
+                // Get the content
+                $PageContent = GetPageContent($parent,$child);
+            }
+            else
+            {
+                // no parent
+                // Get the content
+                $PageContent = GetPageContent($parent);
+            }
 
             // Evaluate the content
             /*echo eval("?>".$PageContent."<?");*/
