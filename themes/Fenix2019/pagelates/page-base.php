@@ -1,9 +1,9 @@
 <?php
 // Load the nav
-include("themes/".THEME_NAME."/nav.php");
+include("themes/".$THEME_NAME."/nav.php");
 
 // Load the header
-include("themes/".THEME_NAME."/pageheader.php");
+include("themes/".$THEME_NAME."/pageheader.php");
 ?>
 
 <div class="main">
@@ -37,5 +37,5 @@ include("themes/".THEME_NAME."/pageheader.php");
 
 <?php
 // Load the footer
-include("themes/".THEME_NAME."/pagefooter.php");
+include("themes/".$THEME_NAME."/pagefooter.php");
 ?>

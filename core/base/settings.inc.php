@@ -1,11 +1,9 @@
 <?php
 // Base
 define("FRAMEWORK_NAME", "FEDIMCore");
-define("VERSION", "2.0.4");
-define("ABSPATH", "http://localhost/projects/FEDIMCore/");                      // The absolute path of your website
-define("FrameworkLocation", "core/paperkit2/");                                 // The framework location that FEDIMCore is built on; usually a folder placed under the /core/
-                                                                                // folder; contains the framework assets
-define("THEME_NAME", "Fenix2019");
+define("VERSION", "2.0.6");
+define("ABSPATH", "http://fedimcore.local/");                                   // The absolute path of your website
+
 define("FRONTPAGE_FILE", "FrontPage.php");                                      // Define the name of the FrontPage found in pages/
 define("FRONTPAGE_DB", "FrontPage");                                            // Define the name of the FrontPage found in Database
 
@@ -14,7 +12,7 @@ define("FRONTPAGE_DB", "FrontPage");                                            
 define("DBHostLocal", "localhost");
 define("DBUserLocal", "firitkodemaster");
 define("DBPassLocal", "AudioMelon2020");
-define("DBNameLocal", "ferimcore_master");
+define("DBNameLocal", "fedimcore_master");
 define("DBPrefixLocal", "fc_");
 
 // Database - remote - fill in details of your server

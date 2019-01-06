@@ -23,6 +23,9 @@ include("core/base/connect.inc.php");
 $PageString = "";
 BuildPageStringFile();
 
+// Version 2.0.6 - Get the theme name from DB
+$THEME_NAME = GetSettings("theme_name");
+
 // Run ErrorDetectionSystem
 ErrorDetectionSystem();
 
@@ -34,8 +37,8 @@ SetParentChildFromString($PageString);
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <link rel="icon" type="image/png" href="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/img/favicon.ico">
-        <link rel="apple-touch-icon" sizes="76x76" href="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/img/apple-icon.png">
+        <link rel="icon" type="image/png" href="<?php echo ABSPATH;?><?php echo $THEME_NAME;?>/img/favicon.ico">
+        <link rel="apple-touch-icon" sizes="76x76" href="<?php echo ABSPATH;?><?php echo $THEME_NAME;?>/img/apple-icon.png">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
         <title><?php echo FRAMEWORK_NAME;?> <?php echo VERSION;?><?php
@@ -67,28 +70,21 @@ SetParentChildFromString($PageString);
         <meta name="viewport" content="width=device-width" />
 
         <!-- Bootstrap core CSS     -->
-        <link href="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/css/paper-kit.css?v=2.1.0" rel="stylesheet"/>
+        <link href="<?php echo ABSPATH;?>core/base/includes/css/bootstrap.min.css" rel="stylesheet" />
 
-        <!--  CSS for Demo Purpose, don't include it in your project     -->
-        <link href="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/css/demo.css" rel="stylesheet" />
+        <?php
+        include("themes/".$THEME_NAME."/includes/extras.top.js.inc.php");
+        ?>
 
         <!--     Fonts and icons     -->
         <link href='http://fonts.googleapis.com/css?family=Montserrat:400,300,700' rel='stylesheet' type='text/css'>
         <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
-        <link href="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/css/nucleo-icons.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
         <!-- Error Page assets -->
         <!-- Google font -->
       	<link href="https://fonts.googleapis.com/css?family=Muli:400" rel="stylesheet">
       	<link href="https://fonts.googleapis.com/css?family=Passion+One" rel="stylesheet">
-
-      	<!-- Font Awesome Icon -->
-      	<link type="text/css" rel="stylesheet" href="<?php echo ABSPATH;?>themes/<?php echo THEME_NAME;?>/includes/errorpage/css/font-awesome.min.css" />
-
-      	<!-- Custom stlylesheet -->
-      	<link type="text/css" rel="stylesheet" href="<?php echo ABSPATH;?>themes/<?php echo THEME_NAME;?>/includes/errorpage/css/style.css" />
 
       	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
       	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -103,36 +99,36 @@ SetParentChildFromString($PageString);
         // Error Detection System
         if($Error == 0)
         {
-            include("themes/".THEME_NAME."/pagelates/page-base.php");
+            include("themes/".$THEME_NAME."/pagelates/page-base.php");
         }
         else
         {
             // ERROR Found
-            include("themes/".THEME_NAME."/pagelates/error-base.php");
+            include("themes/".$THEME_NAME."/pagelates/error-base.php");
         }
         ?>
     </body>
 
     <!-- Core JS Files -->
-    <script src="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/js/jquery-3.2.1.js" type="text/javascript"></script>
-    <script src="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/js/jquery-ui-1.12.1.custom.min.js" type="text/javascript"></script>
-    <script src="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/js/popper.js" type="text/javascript"></script>
-    <script src="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="<?php echo ABSPATH;?>core/base/includes/js/jquery-3.2.1.js" type="text/javascript"></script>
+    <script src="<?php echo ABSPATH;?>core/base/includes/js/jquery-ui-1.12.1.custom.min.js" type="text/javascript"></script>
+    <script src="<?php echo ABSPATH;?>core/base/includes/js/popper.js" type="text/javascript"></script>
+    <script src="<?php echo ABSPATH;?>core/base/includes/js/bootstrap.min.js" type="text/javascript"></script>
 
     <!-- Switches -->
-    <script src="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/js/bootstrap-switch.min.js"></script>
+    <script src="<?php echo ABSPATH;?>core/base/includes/js/bootstrap-switch.min.js"></script>
 
     <!--  Plugins for Slider -->
-    <script src="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/js/nouislider.js"></script>
+    <script src="<?php echo ABSPATH;?>core/base/includes/js/nouislider.js"></script>
 
     <!--  Plugins for DateTimePicker -->
-    <script src="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/js/moment.min.js"></script>
-    <script src="<?php echo ABSPATH;?><?php echo FrameworkLocation;?>assets/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="<?php echo ABSPATH;?>core/base/includes/js/moment.min.js"></script>
+    <script src="<?php echo ABSPATH;?>core/base/includes/js/bootstrap-datetimepicker.min.js"></script>
 
     <?php
     if(!ErrorDetectionSystem())
     {
-      include("core/base/extras.js.inc.php");
+      include("themes/".$THEME_NAME."/includes/extras.bottom.js.inc.php");
     }
     ?>
 </html>

@@ -217,6 +217,7 @@ function ErrorDetectionSystem()
   global $PAGE;
   global $MSet;
   global $FRONTPAGE_TYPE;
+  global $THEME_NAME;
 
   // Set a base case
   $Error = 0;
@@ -439,6 +440,15 @@ function ErrorDetectionSystem()
   if (!INISettingsStatus){$Error = 1;$ErrorType="INI";}
   // --------------------------------------------------------------------------------------------------------
 
+  // -- Theme Exist detection -------------------------------------------------------------------------------
+  if (!file_exists("themes/".$THEME_NAME."/.enabled"))
+  {
+      $Error = 1;
+      $ErrorMessage = "The current theme is not enabled!";
+      $ErrorType = "THEME";
+  }
+  // --------------------------------------------------------------------------------------------------------
+
   // Don't need to return something
   // Do endcode
   /*if ($Error == 1)
@@ -449,6 +459,24 @@ function ErrorDetectionSystem()
   {
       return false;
   }*/
+}
+
+function GetMenuLocationInfo($menuname,$WHAT)
+{
+    // query_db call
+    $Query = query_db("SELECT",DB_PREFIX."menulocations","name,"," = '{$menuname}',","{$WHAT}","{$WHAT}",NULL,NULL,NULL,NULL);
+
+    if ($Query != "")
+    {
+        // Explode list
+        $List = explode(",", $Query);
+
+        // Select first one
+        $Value = $List[0];
+
+        // found
+        return $Value;
+    }
 }
 
 function GetNavigationItemDetails($ItemID,$WHAT)
@@ -505,10 +533,10 @@ function GetMenuItemInfo($ItemID,$WHAT)
     }
 }
 
-function GetNavigationItems($menuID)
+function GetNavigationItems($locationID)
 {
     // query_db call
-    $Query = query_db("SELECT",DB_PREFIX."menus","menuID,status,"," = '{$menuID}', = 'active',","id","itemorder",NULL,NULL,NULL,NULL);
+    $Query = query_db("SELECT",DB_PREFIX."menus","locationID,status,"," = '{$locationID}', = 'active',","id","itemorder",NULL,NULL,NULL,NULL);
 
     if ($Query != "")
     {

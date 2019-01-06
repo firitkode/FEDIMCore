@@ -14,7 +14,10 @@
                 <?php
                 // -- Load the menu
                 // First we need to check what menu ID we are using for the header
-                $HeaderMenuID = GetSettings("header_menu");
+                // DEP'd : $HeaderMenuID = GetSettings("header_menu");
+
+                // Version 2.0.6 - Changed get location menu id
+                $HeaderMenuID = 1;
 
                 // Now pull all the menu items from database for that menu
                 $HeaderMenuItems = GetNavigationItems($HeaderMenuID);
@@ -129,12 +132,16 @@
                             }
                             else
                             {
-                                // Display the item
-                                $ItemContent .= "
-                                    <li class=\"nav-item\">
-                                        <a href=\"{$FULLHeaderMenu_ItemURL}\" class=\"nav-link\" target=\"{$HeaderMenu_ItemTarget}\"><i class=\"{$HeaderMenu_ItemClass}\"></i>{$HeaderMenu_ItemName}</a>
-                                    </li>
-                                ";
+                                // Version 2.0.6 - Fix for blanks in nav
+                                if (!empty($HeaderMenu_ItemType))
+                                {
+                                    // Display the item
+                                    $ItemContent .= "
+                                        <li class=\"nav-item\">
+                                            <a href=\"{$FULLHeaderMenu_ItemURL}\" class=\"nav-link\" target=\"{$HeaderMenu_ItemTarget}\"><i class=\"{$HeaderMenu_ItemClass}\"></i>{$HeaderMenu_ItemName}</a>
+                                        </li>
+                                    ";
+                                }
                             }
 
                             $HMICount++;
