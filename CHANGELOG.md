@@ -1,10 +1,15 @@
 # Change Log
 
+## [1.0.7] 2019-03-07
+### ORBo Push - Major update
+ - FIXED: Footer gets pushed down
+ - NEW: Parse Tag System for templates of page content
+
 ## [1.0.6] 2019-01-05
-### GOLD Push - Cleaned everything 
- - After losing some changes made in previous versions due to a computer failure, this update is the start to something new. 
+### GOLD Push - Cleaned everything
+ - After losing some changes made in previous versions due to a computer failure, this update is the start to something new.
  - Cleaned up the README file to reflect everything right.
- - ENHANCED the theme choosing and selecting - instead of putting the theme name in the settings.inc.php, it's controlled on the DB settings table. There is also a .enabled file created to check if the theme is enabled. 
+ - ENHANCED the theme choosing and selecting - instead of putting the theme name in the settings.inc.php, it's controlled on the DB settings table. There is also a .enabled file created to check if the theme is enabled.
 
 ## [1.0.0] 2018-11-25
 ### Original Push

@@ -1,23 +1,10 @@
-/*!
+@import url('https://fonts.googleapis.com/css?family=Nunito');
 
- =========================================================
- * Paper Kit 2 - v2.0.1
- =========================================================
-
- * Product Page: http://www.creative-tim.com/product/paper-kit-2
- * Copyright 2017 Creative Tim (http://www.creative-tim.com)
- * Licensed under MIT (https://github.com/timcreative/paper-kit/blob/master/LICENSE.md)
-
- =========================================================
-
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- */
-/*      light colors - used for select dropdown         */
 /*           Font Smoothing      */
 h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6, p, .navbar, .brand, a, .td-name, td, button, input, select, textarea {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  font-family: "Montserrat", "Helvetica", Arial, sans-serif;
+  font-family: 'Nunito', sans-serif;
   font-weight: 300;
 }
 
@@ -60,6 +47,7 @@ p {
   font-size: 15px;
   line-height: 1.5em;
   margin-bottom: 5px;
+  color: #c6c6c6;
 }
 
 h1 small, h2 small, h3 small, h4 small, h5 small, h6 small, .h1 small, .h2 small, .h3 small, .h4 small, .h5 small, .h6 small, h1 .small, h2 .small, h3 .small, h4 .small, h5 .small, h6 .small, .h1 .small, .h2 .small, .h3 .small, .h4 .small, .h5 .small, .h6 .small {
@@ -78,7 +66,7 @@ h1 small, h2 small, h3 small, h1 .small, h2 .small, h3 .small {
 .footer-big h5,
 .footer-big h4,
 .media .media-heading {
-  font-family: "Montserrat", "Helvetica", Arial, sans-serif;
+  font-family: 'Nunito', sans-serif;
 }
 .title,
 .title a,
@@ -196,7 +184,7 @@ body {
   color: #66615b;
   font-size: 14px;
   font-weight: 300;
-  font-family: 'Montserrat', "Helvetica", Arial, sans-serif;
+  font-family: 'Nunito', sans-serif;
 }
 
 a {
@@ -1660,7 +1648,6 @@ textarea.form-control {
 .section {
   padding: 70px 0;
   position: relative;
-  background-color: #FFFFFF;
 }
 
 .section-with-space {
@@ -5930,4 +5917,10 @@ textarea.form-control {
 }
 .following img {
   max-width: 70px;
+}
+
+code {
+  background: #454e5b;
+  color: yellow;
+  padding: 10px;
 }

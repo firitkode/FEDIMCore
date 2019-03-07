@@ -11,6 +11,8 @@ $SUBPAGE = (isset($_GET['subpage'])) ? $_GET['subpage'] : "";
 $MINIPAGE = (isset($_GET['minipage'])) ? $_GET['minipage'] : "";
 $TINYPAGE = (isset($_GET['tinypage'])) ? $_GET['tinypage'] : "";
 
+error_reporting(E_ERROR | E_PARSE);
+
 // Check/Set the environment to determine which set of database settings to use, server settings properly set up, etc
 $MSet = 0;
 $ErrorMessage = "";
@@ -75,6 +77,8 @@ SetParentChildFromString($PageString);
         <?php
         include("themes/".$THEME_NAME."/includes/extras.top.js.inc.php");
         ?>
+
+        <link href="<?php echo ABSPATH;?>core/base/includes/css/core.css" rel="stylesheet" />
 
         <!--     Fonts and icons     -->
         <link href='http://fonts.googleapis.com/css?family=Montserrat:400,300,700' rel='stylesheet' type='text/css'>

@@ -686,7 +686,7 @@ function PageLoad($parent,$child,$type)
 
             // Evaluate the content
             /*echo eval("?>".$PageContent."<?");*/
-            ParsePageLoad($PageContent,$PAGE);
+            ParsePageLoad($PageContent);
         break;
 
         case 'FILE':
@@ -698,7 +698,7 @@ function PageLoad($parent,$child,$type)
                 $CONTENTS = fread($PageFile,filesize($FILE));
                 /*echo eval("?>".$CONTENTS."<?");*/
 
-                ParsePageLoad($CONTENTS,$file);
+                ParsePageLoad($CONTENTS);
                 fclose($PageFile);
             }
 
@@ -706,9 +706,88 @@ function PageLoad($parent,$child,$type)
     }
 }
 
-function ParsePageLoad($content,$pagename)
+function ParsePageLoad($Content)
 {
-    echo $content;
+    /*
+    <div class="section section-dark text-center">
+        <div class="container">
+            <h2 class="title">A Dark Section</h2>
+            <div class="row">
+                <div class="col-md-12">
+                    <p>This is the frontpage loaded from file</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    */
+
+    // -- Colors
+    $Content = str_replace("[white]", "<span style=\"color: white;\">", $Content);
+    $Content = str_replace("[/white]", "</span>", $Content);
+    $Content = str_replace("[black]", "<span style=\"color: black;\">", $Content);
+    $Content = str_replace("[/black]", "</span>", $Content);
+    // ------------------------------------------------------------------------
+
+    // -- Section tags
+    $Content = str_replace("[[section]]", "<div class=\"section\"><div class=\"container\">", $Content);
+    $Content = str_replace("[[sectiondark]]", "<div class=\"section section-dark\"><div class=\"container\">", $Content);
+    // ------------------------------------------------------------------------
+
+    // -- Header Typeface
+    $Content = str_replace("[h1]", "<h1 class=\"title\">", $Content);
+    $Content = str_replace("[/h1]", "</h1>", $Content);
+
+    $Content = str_replace("[h2]", "<h2 class=\"title\">", $Content);
+    $Content = str_replace("[/h2]", "</h2>", $Content);
+
+    $Content = str_replace("[h3]", "<h3 class=\"title\">", $Content);
+    $Content = str_replace("[/h3]", "</h3>", $Content);
+
+    $Content = str_replace("[h4]", "<h4 class=\"title\">", $Content);
+    $Content = str_replace("[/h4]", "</h4>", $Content);
+
+    $Content = str_replace("[h5]", "<h5 class=\"title\">", $Content);
+    $Content = str_replace("[/h5]", "</h5>", $Content);
+    // -----------------------------------------------------------------------------------------------
+
+    $Content = str_replace("[row]", "<div class=\"row\">", $Content);
+
+    $Content = str_replace("[col33]", "<div class=\"col-md-4\">", $Content);
+    $Content = str_replace("[col50]", "<div class=\"col-md-6\">", $Content);
+    $Content = str_replace("[col66]", "<div class=\"col-md-7\">", $Content);
+    $Content = str_replace("[col100]", "<div class=\"col-md-12\">", $Content);
+    $Content = str_replace("[/col]", "</div>", $Content);
+
+    $Content = str_replace("[p]", "<p>", $Content);
+    $Content = str_replace("[/p]", "</p>", $Content);
+
+    $Content = str_replace("[b]", "<b>", $Content);
+    $Content = str_replace("[/b]", "</b>", $Content);
+
+    $Content = str_replace("[u]", "<u>", $Content);
+    $Content = str_replace("[/u]", "</u>", $Content);
+
+    $Content = str_replace("[/row]", "</div>", $Content);
+
+    $Content = str_replace("[[/section]]", "</div></div>", $Content);
+
+    // -- Text properties
+    $Content = str_replace("[textleft]", "<span style=\"text-align: left;\">", $Content);
+    $Content = str_replace("[/textleft]", "</span>", $Content);
+    $Content = str_replace("[textcenter]", "<span style=\"text-align: center;\">", $Content);
+    $Content = str_replace("[/textcenter]", "</span>", $Content);
+    $Content = str_replace("[textright]", "<span style=\"text-align: right;\">", $Content);
+    $Content = str_replace("[/textright]", "</span>", $Content);
+    $Content = str_replace("[textjustify]", "<span style=\"text-align: justify; word-wrap: break-word;\">", $Content);
+    $Content = str_replace("[/textjustify]", "</span>", $Content);
+    // --------------------------------------------------------------------------------------------------
+
+    // -- Comments
+    $Content = str_replace("[blockcomment]", "<!--", $Content);
+    $Content = str_replace("[/blockcomment]", "-->", $Content);
+    // ---------------------------------------------------------------------------------------------------
+
+    echo $Content;
 }
 
 function PullFileInfo($String,$What)

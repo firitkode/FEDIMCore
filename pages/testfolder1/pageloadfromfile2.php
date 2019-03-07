@@ -1,48 +1,50 @@
-<!--<div class="section text-center">
-    <div class="container">
-        <h2 class="title">A Light Section</h2>
-        <div class="row">
-            <div class="col-md-8 ml-auto mr-auto">
+<?php
+/*
+Page Template : Basic boxed layout
+Description: This template is provided to be used as a basic template
+Version: 1.0.0
+*/
+?>
 
-            </div>
-        </div>
-        <br/><br/>
-        <div class="row">
-            <div class="col-md-3">
+[[sectiondark]]
+  [h1][white][textcenter]H1 Title Here[/textcenter][/white][/h1]
+    [row]
+        [col33]
+          [h3][textcenter]H3 Title[/textcenter][/h3]
+          [p][white]
+              [textjustify]
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque in lectus ac rhoncus. Mauris faucibus, ante quis porta rhoncus, ipsum dolor pulvinar lectus, nec pharetra odio diam nec ligula. Fusce rutrum sapien orci, a hendrerit elit efficitur sit amet. Curabitur malesuada velit leo, id malesuada magna varius non. Nunc in nisi et lorem viverra porttitor. Mauris laoreet et nibh et venenatis. Vestibulum imperdiet pulvinar metus sed rhoncus.
+              [/textjustify]
+          [/white][/p]
+        [/col]
 
-            </div>
-            <div class="col-md-3">
+        [col33]
+          [h3][textcenter]H3 Title[/textcenter][/h3]
+          [p][white]
+              [textjustify]
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque in lectus ac rhoncus. Mauris faucibus, ante quis porta rhoncus, ipsum dolor pulvinar lectus, nec pharetra odio diam nec ligula. Fusce rutrum sapien orci, a hendrerit elit efficitur sit amet. Curabitur malesuada velit leo, id malesuada magna varius non. Nunc in nisi et lorem viverra porttitor. Mauris laoreet et nibh et venenatis. Vestibulum imperdiet pulvinar metus sed rhoncus.
+              [/textjustify]
+          [/white][/p]
+        [/col]
 
-            </div>
-            <div class="col-md-3">
+        [col33]
+          [h3][textcenter]H3 Title[/textcenter][/h3]
+          [p][white]
+              [textjustify]
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur pellentesque in lectus ac rhoncus. Mauris faucibus, ante quis porta rhoncus, ipsum dolor pulvinar lectus, nec pharetra odio diam nec ligula. Fusce rutrum sapien orci, a hendrerit elit efficitur sit amet. Curabitur malesuada velit leo, id malesuada magna varius non. Nunc in nisi et lorem viverra porttitor. Mauris laoreet et nibh et venenatis. Vestibulum imperdiet pulvinar metus sed rhoncus.
+              [/textjustify]
+          [/white][/p]
+        [/col]
 
-            </div>
-            <div class="col-md-3">
+    [/row]
+[[/section]]
 
-            </div>
-        </div>
-
-    </div>
-</div>-->
-
-<div class="section section-dark text-center">
-    <div class="container">
-        <h2 class="title">A Dark Section</h2>
-        <div class="row">
-            <div class="col-md-12">
-                <p>I am a test page loaded from a file one level deep uner testfolder1/!</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!--<div class="section landing-section text-center">
-    <div class="container">
-        <h2 class="title">A Light Section</h2>
-        <div class="row">
-            <div class="col-md-8 ml-auto mr-auto">
-
-            </div>
-        </div>
-    </div>
-</div>-->
+[blockcomment]
+[[section]]
+  [h1][black]Another section[/black][/h1]
+  [content]
+      [p][black]A paragraph of some sort[/black][/p]
+      [p][black]This front page utilizes NCode[], a parser for PHP.[/black][/p]
+  [/content]
+[[/section]]
+[/blockcomment]

@@ -6,10 +6,10 @@ Purpose: Extras include for placing <script> that get loaded into the top of the
 ?>
 
         <!-- Theme Stylesheet -->
-        <link href="<?php echo ABSPATH;?>themes/<?php echo $THEME_NAME;?>/css/paper-kit.css?v=2.1.0" rel="stylesheet"/>
+        <link href="<?php echo ABSPATH;?>themes/<?php echo $THEME_NAME;?>/css/theme.css?v=2.1.0" rel="stylesheet"/>
 
         <!--  CSS for Demo Purpose, don't include it in your project     -->
-        <link href="<?php echo ABSPATH;?>themes/<?php echo $THEME_NAME;?>/css/demo.css" rel="stylesheet" />
+        <!--<link href="<?php //echo ABSPATH;?>themes/<?php //echo $THEME_NAME;?>/css/demo.css" rel="stylesheet" />-->
 
         <!-- Fonts and Icons -->
         <link href="<?php echo ABSPATH;?>themes/<?php echo $THEME_NAME;?>/css/nucleo-icons.css" rel="stylesheet" />

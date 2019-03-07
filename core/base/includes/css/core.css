@@ -1,0 +1,9 @@
+.main {
+   min-height: calc(100vh - 70px);
+}
+.footer {
+  height: 50px;
+}
+.main span {
+  display: block;
+}
